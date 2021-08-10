@@ -5,8 +5,9 @@ import glob
 import numpy as np
 import pandas as pd
 
+# todo: Multiple files cannot be processed because site_info.csv lacks information
 """ 
-This script converts .CSV files from FLUXNET2015 Tier 2 to netCDF.
+This script converts .CSV files from FLUXNET2015  to netCDF.
 Written by Marco Hannemann (marco.hannemann@ufz.de)
 
 0. Prequisites
@@ -189,7 +190,7 @@ def flux2netcdf(path, site, temporal_agg, settype):
                 'elevation': metadata.loc['elev'],
                 'longitude': metadata.loc['lon'],
                 'latitude': metadata.loc['lat'],
-                'plant_functional_type': metadata.loc['pft'],
+                'plant_functional_type': metadata.loc['igbp'],
                 'institution': 'https://fluxnet.org',
                 'source': 'FLUXNET',
                 'history': f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} '
@@ -228,13 +229,15 @@ def main(path, site, temporal_agg, settype):
             print(site)
             if site == 'AA-Flx':
                 continue
+
             flux2netcdf(path, site, temporal_agg, settype)
+
     else:
         flux2netcdf(path, site, temporal_agg, settype)
 
 
 legend = pd.read_csv('doc/variable_codes_FULLSET_20200504.csv')
-site_info = pd.read_csv('doc/site_info.csv', index_col='site')
+site_info = pd.read_csv('doc/site_info.csv', sep=';', index_col='site')
 
 main(path='E:/Data/FLUXNET2015/',
      site='all',
